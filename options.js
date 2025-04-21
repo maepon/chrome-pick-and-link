@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
   exportButton.addEventListener('click', () => {
     chrome.storage.sync.get(['rules'], (data) => {
       const rules = data.rules || [];
-      const yamlContent = `# Pick Code Link Settings\n` +
+      const yamlContent = `# Pick And Link Settings\n` +
         jsyaml.dump({ rules });
 
       const blob = new Blob([yamlContent], { type: 'text/yaml' });
