@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick Code Link Settings</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, textarea {
+      width: 100%;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .button-lite {
+        margin: 0;
+        background-color: #f0f0f0;
+        color: #333;
+        padding: 3px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .rule {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+  <script src="js-yaml.min.js"></script>
+  <script src="options.js" defer></script>
+</head>
+<body>
+  <h1>Pick Code Link Settings</h1>
+  <div id="rules-container">
+    <!-- Rules will be dynamically added here -->
+  </div>
+  <button id="add-rule">Add Rule</button>
+  <button id="save-settings">Save All Rules</button>
+  <button id="export-settings">Export Settings</button>
+  <input type="file" id="import-settings" accept=".yaml" style="display: none;">
+  <button id="import-settings-button">Import Settings</button>
+</body>
+</html>
