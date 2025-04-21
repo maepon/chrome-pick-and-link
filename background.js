@@ -1,4 +1,9 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (!message || typeof message.action !== 'string') {
+    console.warn('Invalid message received:', message);
+    return;
+  }
+
   if (message.action === 'getLinks') {
     // Forward the message to the content script
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

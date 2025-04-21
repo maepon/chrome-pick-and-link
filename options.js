@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const ruleDivs = rulesContainer.querySelectorAll('.rule');
 
     ruleDivs.forEach((ruleDiv) => {
-      const title = ruleDiv.querySelector('.rule-title').value;
-      const urlPattern = ruleDiv.querySelector('.rule-url-pattern').value;
-      const codePattern = ruleDiv.querySelector('.rule-code-pattern').value;
-      const urlTemplate = ruleDiv.querySelector('.rule-url-template').value;
+      const title = ruleDiv.querySelector('.rule-title').value.trim();
+      const urlPattern = ruleDiv.querySelector('.rule-url-pattern').value.trim();
+      const codePattern = ruleDiv.querySelector('.rule-code-pattern').value.trim();
+      const urlTemplate = ruleDiv.querySelector('.rule-url-template').value.trim();
 
       // Validate inputs
       if (!title || !urlPattern || !codePattern || !urlTemplate) {
@@ -68,7 +68,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      rules.push({ title, urlPattern, codePattern, urlTemplate });
+      // Sanitize inputs
+      rules.push({
+        title: DOMPurify.sanitize(title),
+        urlPattern: DOMPurify.sanitize(urlPattern),
+        codePattern: DOMPurify.sanitize(codePattern),
+        urlTemplate: DOMPurify.sanitize(urlTemplate)
+      });
     });
 
     chrome.storage.sync.set({ rules }, () => {
@@ -108,6 +114,18 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const content = e.target.result;
         const data = jsyaml.load(content);
+
+        if (!Array.isArray(data.rules)) {
+          alert('Invalid YAML format: rules should be an array.');
+          return;
+        }
+
+        data.rules.forEach((rule, index) => {
+          if (!rule.title || !rule.urlPattern || !rule.codePattern || !rule.urlTemplate) {
+            alert(`Invalid rule at index ${index}: All fields (title, urlPattern, codePattern, urlTemplate) are required.`);
+            throw new Error('Invalid rule format');
+          }
+        });
 
         if (data && Array.isArray(data.rules)) {
           chrome.storage.sync.get(['rules'], (existingData) => {

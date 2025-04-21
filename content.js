@@ -14,6 +14,11 @@ chrome.storage.sync.get(['rules'], (data) => {
 
   // Listen for messages from the popup
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (!message || typeof message.action !== 'string') {
+      console.warn('Invalid message received:', message);
+      return;
+    }
+
     if (message.action === 'getLinks') {
       if (matchingRules.length === 0) {
         sendResponse({ links: [] }); // Return an empty list if no rules match
