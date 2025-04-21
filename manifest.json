@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Pick Code Link",
+  "name": "Pick&Link",
   "version": "1.0",
   "description": "A Chrome extension to pick and share code links.",
   "permissions": ["storage", "activeTab"],
