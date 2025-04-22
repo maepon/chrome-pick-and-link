@@ -62,8 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const codePattern = ruleDiv.querySelector('.rule-code-pattern').value.trim();
       const urlTemplate = ruleDiv.querySelector('.rule-url-template').value.trim();
 
-      console.log(`Rule ${index}:`, { title, urlPattern, codePattern, urlTemplate });
-
       // Validate inputs
       if (!title || !urlPattern || !codePattern || !urlTemplate) {
         console.warn(`Rule ${index} is invalid. All fields are required.`);
@@ -79,14 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
         urlTemplate: DOMPurify.sanitize(urlTemplate)
       };
 
-      console.log(`Sanitized Rule ${index}:`, sanitizedRule);
       rules.push(sanitizedRule);
     });
 
-    console.log('Final Rules to Save:', rules);
-
     chrome.storage.sync.set({ rules }, () => {
-      console.log('Rules saved successfully!');
       alert('Rules saved!');
     });
   });

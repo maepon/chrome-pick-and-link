@@ -44,8 +44,6 @@ chrome.storage.sync.get(['rules'], (data) => {
         allLinks.push(...links);
       });
 
-      console.log('Generated links:', allLinks);
-
       sendResponse({ links: allLinks });
     }
   });
