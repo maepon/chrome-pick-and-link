@@ -3,6 +3,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fetch the picked links via the background script
   chrome.runtime.sendMessage({ action: 'getLinks' }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error('Error fetching links:', chrome.runtime.lastError.message);
+      linkList.textContent = 'Failed to fetch links. Please try again.';
+      return;
+    }
+
     if (response && response.links) {
       const groupedLinks = response.links.reduce((acc, link) => {
         const { title, text, url } = link;
@@ -28,6 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
           linkList.appendChild(listItem);
         });
       });
+    } else {
+      linkList.textContent = 'No links found.';
     }
   });
 });

@@ -9,7 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load saved rules
   chrome.storage.sync.get(['rules'], (data) => {
     const rules = data.rules || [];
-    rules.forEach((rule) => addRuleToUI(rule));
+    rules.forEach((rule) => {
+      rule.codePattern = rule.codePattern.replace(/&lt;/g, '<').replace(/&gt;/g, '>'); // エスケープを元に戻す
+      addRuleToUI(rule);
+    });
   });
 
   // Add a new rule to the UI
@@ -59,8 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
     ruleDivs.forEach((ruleDiv, index) => {
       const title = ruleDiv.querySelector('.rule-title').value.trim();
       const urlPattern = ruleDiv.querySelector('.rule-url-pattern').value.trim();
-      const codePattern = ruleDiv.querySelector('.rule-code-pattern').value.trim();
-      const urlTemplate = ruleDiv.querySelector('.rule-url-template').value.trim();
+      const codePatternInput = ruleDiv.querySelector('.rule-code-pattern');
+      const codePattern = codePatternInput ? codePatternInput.value : ''; // Trimを削除し、正規表現をそのまま扱う
+      const urlTemplateInput = ruleDiv.querySelector('.rule-url-template');
+      const urlTemplate = urlTemplateInput ? urlTemplateInput.value.trim() : ''; // urlTemplateの取得処理を追加
 
       // Validate inputs
       if (!title || !urlPattern || !codePattern || !urlTemplate) {
@@ -73,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const sanitizedRule = {
         title: DOMPurify.sanitize(title),
         urlPattern: DOMPurify.sanitize(urlPattern),
-        codePattern: DOMPurify.sanitize(codePattern),
+        codePattern: DOMPurify.sanitize(codePattern.replace(/</g, '&lt;').replace(/>/g, '&gt;')), // < と > をエスケープ
         urlTemplate: DOMPurify.sanitize(urlTemplate)
       };
 
@@ -81,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     chrome.storage.sync.set({ rules }, () => {
+      console.log('Saved rules:', rules); // 保存されたデータをコンソールに出力
       alert('Rules saved!');
     });
   });
