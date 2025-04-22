@@ -56,28 +56,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const rules = [];
     const ruleDivs = rulesContainer.querySelectorAll('.rule');
 
-    ruleDivs.forEach((ruleDiv) => {
+    ruleDivs.forEach((ruleDiv, index) => {
       const title = ruleDiv.querySelector('.rule-title').value.trim();
       const urlPattern = ruleDiv.querySelector('.rule-url-pattern').value.trim();
       const codePattern = ruleDiv.querySelector('.rule-code-pattern').value.trim();
       const urlTemplate = ruleDiv.querySelector('.rule-url-template').value.trim();
 
+      console.log(`Rule ${index}:`, { title, urlPattern, codePattern, urlTemplate });
+
       // Validate inputs
       if (!title || !urlPattern || !codePattern || !urlTemplate) {
+        console.warn(`Rule ${index} is invalid. All fields are required.`);
         alert('All fields are required for each rule.');
         return;
       }
 
       // Sanitize inputs
-      rules.push({
+      const sanitizedRule = {
         title: DOMPurify.sanitize(title),
         urlPattern: DOMPurify.sanitize(urlPattern),
         codePattern: DOMPurify.sanitize(codePattern),
         urlTemplate: DOMPurify.sanitize(urlTemplate)
-      });
+      };
+
+      console.log(`Sanitized Rule ${index}:`, sanitizedRule);
+      rules.push(sanitizedRule);
     });
 
+    console.log('Final Rules to Save:', rules);
+
     chrome.storage.sync.set({ rules }, () => {
+      console.log('Rules saved successfully!');
       alert('Rules saved!');
     });
   });
