@@ -5,8 +5,7 @@
   "description": "A Chrome extension to pick and share code links.",
   "permissions": [
     "storage",
-    "activeTab",
-    "scripting"
+    "activeTab"
   ],
   "action": {
     "default_popup": "popup.html",
