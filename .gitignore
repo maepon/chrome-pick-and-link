@@ -1,2 +1,9 @@
-
+.DS_Store
+node_modules/
+.git/
 chrome-pick-and-link.zip
+artifacts/
+# VSCode
+.vscode/
+# act用キャッシュ
+~/.cache/act/
