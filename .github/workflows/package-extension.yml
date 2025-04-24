@@ -1,0 +1,35 @@
+name: Package Chrome Extension
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci || true
+
+      - name: Remove unnecessary files
+        run: |
+          rm -rf node_modules .git README.md LICENSE
+
+      - name: Create zip package
+        run: |
+          zip -r chrome-pick-and-link.zip . -x '*.git*' -x 'node_modules/*' -x 'README.md' -x 'LICENSE' -x '.github/*'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chrome-pick-and-link
+          path: chrome-pick-and-link.zip
