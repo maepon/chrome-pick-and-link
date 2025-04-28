@@ -18,6 +18,9 @@ Pick And Linkは、ウェブページ上のコードやリンクを抽出し、�
 3. 右上の「デベロッパーモード」を有効にします。
 4. 「パッケージ化されていない拡張機能を読み込む」をクリックし、このプロジェクトのフォルダを選択します。
 
+## Chromeウェブストア
+[Pick And Link 拡張機能ストアページ](https://chromewebstore.google.com/detail/picklink/akbfaabjgmkdllgcgbkbkoefefgnoook?authuser=0&hl=ja)
+
 ## 使用方法
 1. 拡張機能をインストール後、オプションページでルールを設定します。
    - ルールには以下を指定できます：
