@@ -26,7 +26,7 @@ jobs:
 
       - name: Create zip package
         run: |
-          zip -r chrome-pick-and-link.zip . -x '*.git*' -x 'node_modules/*' -x 'README.md' -x 'LICENSE' -x '.github/*'
+          zip -r chrome-pick-and-link.zip * -x '*.git*' -x 'node_modules/*' -x 'README.md' -x 'LICENSE' -x '.github/*'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
