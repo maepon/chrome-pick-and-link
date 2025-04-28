@@ -31,8 +31,6 @@ chrome.storage.sync.get(['rules'], (data) => {
         // 修正: エスケープされた文字を元に戻す処理を追加
         const codePattern = new RegExp(rule.codePattern.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), 'g');
         const urlTemplate = rule.urlTemplate;
-        console.log('URL Template:', urlTemplate);
-        console.log('Code Pattern:', codePattern);
 
         // Extract links from the current page using the code pattern
         const matches = document.body.innerText.match(codePattern) || []; // Match all occurrences

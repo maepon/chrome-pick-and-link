@@ -26,10 +26,18 @@
       cursor: pointer;
     }
     .button-lite {
-        margin: 0;
-        background-color: #f0f0f0;
-        color: #333;
-        padding: 3px;
+      margin: 0;
+      background-color: #f5f5f5;
+      color: #333;
+      padding: 4px 10px;
+      border: 1px solid #888;
+      border-radius: 4px;
+      font-size: 0.95em;
+      transition: background 0.2s, border 0.2s;
+    }
+    .button-lite:hover {
+      background-color: #e0e0e0;
+      border-color: #555;
     }
     button:hover {
       background-color: #0056b3;
@@ -39,6 +47,28 @@
       padding: 10px;
       margin-bottom: 10px;
     }
+    .delete-rule {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .delete-rule:hover {
+      background-color: #a71d2a;
+    }
+    .rule .delete-rule {
+      float: right;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    .rule::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
   </style>
   <script src="js-yaml.min.js"></script>
   <script src="options.js" defer></script>
@@ -46,13 +76,20 @@
 </head>
 <body>
   <h1>Pick And Link Settings</h1>
+
+  <h2>ルール管理</h2>
   <div id="rules-container">
     <!-- Rules will be dynamically added here -->
   </div>
   <button id="add-rule">Add Rule</button>
   <button id="save-settings">Save All Rules</button>
+
+  <hr>
+
+  <h2>設定のエクスポート・インポート</h2>
   <button id="export-settings">Export Settings</button>
   <input type="file" id="import-settings" accept=".yaml" style="display: none;">
   <button id="import-settings-button">Import Settings</button>
+
 </body>
 </html>
