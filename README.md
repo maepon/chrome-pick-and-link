@@ -10,15 +10,7 @@ Pick And Linkは、ウェブページ上のコードやリンクを抽出し、�
 - 抽出したリンクをポップアップで表示
 
 ## インストール方法
-1. このリポジトリをクローンまたはダウンロードします。
-   ```bash
-   git clone https://github.com/your-repo/chrome-pick-and-link.git
-   ```
-2. Chromeブラウザを開き、[拡張機能](chrome://extensions/)ページに移動します。
-3. 右上の「デベロッパーモード」を有効にします。
-4. 「パッケージ化されていない拡張機能を読み込む」をクリックし、このプロジェクトのフォルダを選択します。
-
-## Chromeウェブストア
+Chromeウェブストアからインストールしてください。
 [Pick And Link 拡張機能ストアページ](https://chromewebstore.google.com/detail/picklink/akbfaabjgmkdllgcgbkbkoefefgnoook?authuser=0&hl=ja)
 
 ## 使用方法
