@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
         titleElement.textContent = title;
         linkList.appendChild(titleElement);
 
+        const ul = document.createElement('ul');
         links.forEach(({ text, url }) => {
           const listItem = document.createElement('li');
           const anchor = document.createElement('a');
@@ -31,8 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
           anchor.textContent = text;
           anchor.target = '_blank';
           listItem.appendChild(anchor);
-          linkList.appendChild(listItem);
+          ul.appendChild(listItem);
         });
+        linkList.appendChild(ul);
       });
     } else {
       linkList.textContent = 'No links found.';
