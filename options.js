@@ -6,6 +6,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const importButton = document.getElementById('import-settings-button');
   const importInput = document.getElementById('import-settings');
 
+  let savedRulesSnapshot = [];
+
+  function getCurrentRulesFromUI() {
+    const rules = [];
+    const ruleDivs = rulesContainer.querySelectorAll('.rule');
+
+    ruleDivs.forEach((ruleDiv) => {
+      const title = ruleDiv.querySelector('.rule-title').value.trim();
+      const urlPattern = ruleDiv.querySelector('.rule-url-pattern').value.trim();
+      const codePatternInput = ruleDiv.querySelector('.rule-code-pattern');
+      const codePattern = codePatternInput ? codePatternInput.value : '';
+      const urlTemplateInput = ruleDiv.querySelector('.rule-url-template');
+      const urlTemplate = urlTemplateInput ? urlTemplateInput.value.trim() : '';
+
+      rules.push({
+        title,
+        urlPattern,
+        codePattern,
+        urlTemplate
+      });
+    });
+
+    return rules;
+  }
+
+  function rulesAreEqual(rulesA, rulesB) {
+    return JSON.stringify(rulesA) === JSON.stringify(rulesB);
+  }
+
+  function updateSaveButtonState() {
+    const currentRules = getCurrentRulesFromUI();
+    saveButton.disabled = rulesAreEqual(currentRules, savedRulesSnapshot);
+  }
+
   // Load saved rules
   chrome.storage.sync.get(['rules'], (data) => {
     const rules = data.rules || [];
@@ -13,6 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
       rule.codePattern = rule.codePattern.replace(/&lt;/g, '<').replace(/&gt;/g, '>'); // エスケープを元に戻す
       addRuleToUI(rule);
     });
+    // ルールをUIに追加し終えた後、UIの状態をスナップショットとして保存
+    savedRulesSnapshot = getCurrentRulesFromUI();
+    updateSaveButtonState();
   });
 
   // Add a new rule to the UI
@@ -44,9 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteButton = ruleDiv.querySelector('.delete-rule');
     deleteButton.addEventListener('click', () => {
       rulesContainer.removeChild(ruleDiv);
+      updateSaveButtonState();
     });
 
     rulesContainer.appendChild(ruleDiv);
+    updateSaveButtonState();
   }
 
   // Add a new rule when the button is clicked
@@ -56,38 +95,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Save all rules
   saveButton.addEventListener('click', () => {
-    const rules = [];
-    const ruleDivs = rulesContainer.querySelectorAll('.rule');
+    const rules = getCurrentRulesFromUI();
 
-    ruleDivs.forEach((ruleDiv, index) => {
-      const title = ruleDiv.querySelector('.rule-title').value.trim();
-      const urlPattern = ruleDiv.querySelector('.rule-url-pattern').value.trim();
-      const codePatternInput = ruleDiv.querySelector('.rule-code-pattern');
-      const codePattern = codePatternInput ? codePatternInput.value : ''; // Trimを削除し、正規表現をそのまま扱う
-      const urlTemplateInput = ruleDiv.querySelector('.rule-url-template');
-      const urlTemplate = urlTemplateInput ? urlTemplateInput.value.trim() : ''; // urlTemplateの取得処理を追加
-
-      // Validate inputs
-      if (!title || !urlPattern || !codePattern || !urlTemplate) {
+    // Validate inputs
+    for (let index = 0; index < rules.length; index++) {
+      const rule = rules[index];
+      if (!rule.title || !rule.urlPattern || !rule.codePattern || !rule.urlTemplate) {
         console.warn(`Rule ${index} is invalid. All fields are required.`);
         alert('All fields are required for each rule.');
         return;
       }
+    }
 
-      // Sanitize inputs
-      const sanitizedRule = {
-        title: DOMPurify.sanitize(title),
-        urlPattern: DOMPurify.sanitize(urlPattern),
-        codePattern: DOMPurify.sanitize(codePattern.replace(/</g, '&lt;').replace(/>/g, '&gt;')), // < と > をエスケープ
-        urlTemplate: DOMPurify.sanitize(urlTemplate)
-      };
+    // Sanitize inputs
+    const sanitizedRules = rules.map((rule) => ({
+      title: DOMPurify.sanitize(rule.title),
+      urlPattern: DOMPurify.sanitize(rule.urlPattern),
+      codePattern: DOMPurify.sanitize(rule.codePattern.replace(/</g, '&lt;').replace(/>/g, '&gt;')), // < と > をエスケープ
+      urlTemplate: DOMPurify.sanitize(rule.urlTemplate)
+    }));
 
-      rules.push(sanitizedRule);
-    });
-
-    chrome.storage.sync.set({ rules }, () => {
-      console.log('Saved rules:', rules); // 保存されたデータをコンソールに出力
+    chrome.storage.sync.set({ rules: sanitizedRules }, () => {
+      console.log('Saved rules:', sanitizedRules); // 保存されたデータをコンソールに出力
       alert('Rules saved!');
+      savedRulesSnapshot = sanitizedRules;
+      updateSaveButtonState();
     });
   });
 
@@ -180,4 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+
+  // Update save button state when input changes
+  rulesContainer.addEventListener('input', updateSaveButtonState);
 });
